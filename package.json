@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "description": "Soundcloud plugin for DisTube.js.org",
   "main": "index.js",
+  "typings": "index.d.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
