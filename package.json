@@ -1,6 +1,6 @@
 {
   "name": "@distube/soundcloud",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Soundcloud plugin for DisTube.js.org",
   "main": "index.js",
   "typings": "index.d.ts",
