@@ -5,26 +5,25 @@ const sc = new SoundCloud();
 const chunker = (arr, size) => {
   const chunks = [];
   let i = 0;
-  while (i < arr.length)
-    chunks.push(arr.slice(i, i += size));
+  while (i < arr.length) chunks.push(arr.slice(i, i += size));
   return chunks;
 };
 
 const resolveTracks = async tracks => {
   const unsolved = tracks.splice(tracks.findIndex(t => !t.title));
   const chunks = chunker(unsolved, 50);
-  const promises = chunks.map(tracks => sc.api.getV2("/tracks", { ids: tracks.map(t => t.id).join(",") }));
+  const promises = chunks.map(ts => sc.api.getV2("/tracks", { ids: ts.map(t => t.id).join(",") }));
   const solvedTracks = await Promise.all(promises);
   return tracks.concat(solvedTracks.flat());
-}
+};
 
 class SoundCloudPlugin extends ExtractorPlugin {
   /**
    * Search for tracks/playlists on SoundCloud
-   * @param {string} query 
-   * @param {'track'|'playlist'} type 
-   * @param {number} limit 
-   * @returns 
+   * @param {string} query String query
+   * @param {'track'|'playlist'} type type
+   * @param {number} limit limit
+   * @returns {Array<Song|Playlist>}
    */
   static async search(query, type = "track", limit = 10) {
     if (typeof query !== "string") throw new TypeError("query must be a string");
@@ -41,15 +40,16 @@ class SoundCloudPlugin extends ExtractorPlugin {
       const playlist = new SoundCloudPlaylist(p);
       if (!playlist.songs?.length) return;
       playlist.songs = (await resolveTracks(playlist.songs)).map(s => new Song(new SoundCloudTrack(s), null, "soundcloud"));
+      // eslint-disable-next-line consistent-return
       return new Playlist(playlist, null, { source: "soundcloud" });
     }));
   }
   /**
    * Search for tracks/playlists on SoundCloud
-   * @param {string} query 
-   * @param {'track'|'playlist'} type 
-   * @param {number} limit 
-   * @returns 
+   * @param {string} query String query
+   * @param {'track'|'playlist'} type type
+   * @param {number} limit limit
+   * @returns {Array<Song|Playlist>}
    */
   search(query, type = "track", limit = 10) {
     return SoundCloudPlugin.search(query, type, limit);
@@ -71,7 +71,7 @@ class SoundCloudPlugin extends ExtractorPlugin {
     if (data.kind === "playlist") {
       const playlist = new SoundCloudPlaylist(data);
       if (!playlist.songs?.length) throw Error("[SoundCloudPlugin] The playlist is empty!");
-      playlist.songs = resolveTracks(playlist.songs).map(s => new Song(new SoundCloudTrack(s), member, "soundcloud"));
+      playlist.songs = (await resolveTracks(playlist.songs)).map(s => new Song(new SoundCloudTrack(s), member, "soundcloud"));
       return new Playlist(playlist, member, { source: "soundcloud" });
     } else {
       return new Song(new SoundCloudTrack(data), member, "soundcloud");
@@ -84,8 +84,8 @@ class SoundCloudPlugin extends ExtractorPlugin {
       .map(t => new Song(new SoundCloudTrack(t), null, "soundcloud"));
   }
 
-  async getStreamURL(url) {
-    return await sc.util.streamLink(url);
+  getStreamURL(url) {
+    return sc.util.streamLink(url);
   }
 }
 
