@@ -1,21 +1,23 @@
 {
-  "files": ["index.js"],
-  "exclude": ["node_modules"],
+  "include": ["index.ts"],
   "compilerOptions": {
     "module": "commonjs",
-    "target": "esnext",
-    "lib": [
-      "esnext",
-      "esnext.array",
-      "esnext.asynciterable",
-      "esnext.intl",
-      "esnext.symbol"
-    ],
+    "target": "es2019",
+    "lib": ["esnext"],
+    "strict": true,
+    "alwaysStrict": true,
+    "removeComments": false,
+    "pretty": true,
+    "sourceMap": true,
+    "inlineSources": true,
     "moduleResolution": "node",
+    "outDir": "dist",
     "allowJs": true,
     "declaration": true,
+    "declarationMap": true,
     "skipLibCheck": true,
-    "emitDeclarationOnly": true,
-    "skipDefaultLibCheck": true
+    "skipDefaultLibCheck": true,
+    "incremental": true,
+    "esModuleInterop": true
   }
 }
