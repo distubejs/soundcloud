@@ -71,6 +71,7 @@ export class SoundCloudPlugin extends ExtractorPlugin {
    * @returns {Promise<Song|Song[]|Playlist>}
    */
   async resolve(url: string, member: GuildMember): Promise<Song | Playlist> {
+    url = url.replace(/:\/\/(m|www)\./g, "://");
     const data = await sc.resolve.getV2(url, true).catch(() => undefined);
     if (!data || !["track", "playlist"].includes(data.kind)) {
       throw Error("[SoundCloudPlugin] This link is not supported. It must be a public track or playlist link.");
