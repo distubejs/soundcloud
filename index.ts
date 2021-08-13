@@ -62,7 +62,7 @@ export class SoundCloudPlugin extends ExtractorPlugin {
     return SoundCloudPlugin.search(query, type, limit);
   }
   async validate(url: string) {
-    return /^https?:\/\/(?:(?:www|m)\.)?(soundcloud\.com|snd\.sc)\/(.*)$/.test(url);
+    return /^https?:\/\/(?:(?:www|m)\.)?soundcloud\.com\/(.*)$/.test(url);
   }
   /**
    * Execute if the url is validated
