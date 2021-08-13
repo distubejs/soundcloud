@@ -1,6 +1,8 @@
-import { GuildMember } from "discord.js";
-import SoundCloud, { SoundcloudPlaylistV2, SoundcloudTrackV2 } from "soundcloud.ts";
-import { ExtractorPlugin, OtherSongInfo, Playlist, PlaylistInfo, Song } from "distube";
+import SoundCloud from "soundcloud.ts";
+import { ExtractorPlugin, Playlist, Song } from "distube";
+import type { GuildMember } from "discord.js";
+import type { OtherSongInfo, PlaylistInfo } from "distube";
+import type { SoundcloudPlaylistV2, SoundcloudTrackV2 } from "soundcloud.ts";
 const sc = new SoundCloud();
 
 const chunker = (arr: any[], size: number) => {
@@ -61,6 +63,7 @@ export class SoundCloudPlugin extends ExtractorPlugin {
   search(query: string, type = "track", limit = 10) {
     return SoundCloudPlugin.search(query, type, limit);
   }
+  // eslint-disable-next-line @typescript-eslint/require-await
   async validate(url: string) {
     return /^https?:\/\/(?:(?:www|m)\.)?soundcloud\.com\/(.*)$/.test(url);
   }
