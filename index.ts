@@ -24,8 +24,8 @@ export class SoundCloudPlugin extends ExtractorPlugin {
   /**
    * Search for tracks/playlists on SoundCloud
    * @param {string} query String query
-   * @param {'track'|'playlist'} type type
-   * @param {number} limit limit
+   * @param {'track'|'playlist'} [type='track'] type
+   * @param {number} [limit=10] limit
    * @returns {Array<Song|Playlist>}
    */
   static async search(query: string, type = "track", limit = 10) {
@@ -53,26 +53,23 @@ export class SoundCloudPlugin extends ExtractorPlugin {
       }),
     );
   }
+
   /**
    * Search for tracks/playlists on SoundCloud
    * @param {string} query String query
-   * @param {'track'|'playlist'} type type
-   * @param {number} limit limit
+   * @param {'track'|'playlist'} [type='track'] type
+   * @param {number} [limit=10] limit
    * @returns {Array<Song|Playlist>}
    */
   search(query: string, type = "track", limit = 10) {
     return SoundCloudPlugin.search(query, type, limit);
   }
+
   // eslint-disable-next-line @typescript-eslint/require-await
   async validate(url: string) {
     return /^https?:\/\/(?:(?:www|m)\.)?soundcloud\.com\/(.*)$/.test(url);
   }
-  /**
-   * Execute if the url is validated
-   * @param {string} url URL
-   * @param {*} member Requested user
-   * @returns {Promise<Song|Song[]|Playlist>}
-   */
+
   async resolve(url: string, member: GuildMember): Promise<Song | Playlist> {
     url = url.replace(/:\/\/(m|www)\./g, "://");
     const data = await sc.resolve.getV2(url, true).catch(() => undefined);

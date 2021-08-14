@@ -47,7 +47,7 @@
     "soundcloud.ts": "^0.4.1"
   },
   "peerDependencies": {
-    "distube": "^3.0.0"
+    "distube": "^3.0.0-beta.34"
   },
   "lint-staged": {
     "*.ts": [
