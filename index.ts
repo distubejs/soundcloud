@@ -5,6 +5,9 @@ import type { OtherSongInfo, PlaylistInfo } from "distube";
 import type { SoundcloudPlaylistV2, SoundcloudTrackV2 } from "soundcloud.ts";
 const sc = new SoundCloud();
 
+type Falsy = undefined | null | false | 0 | "";
+const isTruthy = <T>(x: T | Falsy): x is T => Boolean(x);
+
 const chunker = (arr: any[], size: number) => {
   const chunks = [];
   let i = 0;
@@ -35,23 +38,23 @@ export class SoundCloudPlugin extends ExtractorPlugin {
       throw new TypeError("limit must be a natural number");
     }
     if (type === "track") {
-      // TODO: Remove any after `soundcloud.ts` fixed the types problem
-      const data = await sc.tracks.searchV2({ q: query, limit } as any);
+      const data = await sc.tracks.searchV2({ q: query, limit });
       if (!data?.collection?.length) throw new Error("Cannot find any result!");
       return data.collection.map(t => new Song(new SoundCloudTrack(t)));
     }
-    // TODO: Remove any after `soundcloud.ts` fixed the types problem
-    const data = await sc.playlists.searchV2({ q: query, limit } as any);
+    const data = await sc.playlists.searchV2({ q: query, limit });
     const playlists = data.collection;
-    return Promise.all(
-      playlists.map(async p => {
-        const playlist = new SoundCloudPlaylist(p);
-        if (!playlist.tracks?.length) return;
-        playlist.songs = (await resolveTracks(playlist.tracks)).map(s => new Song(new SoundCloudTrack(s)));
-        // eslint-disable-next-line consistent-return
-        return new Playlist(playlist);
-      }),
-    );
+    return (
+      await Promise.all(
+        playlists.map(async p => {
+          const playlist = new SoundCloudPlaylist(p);
+          if (!playlist.tracks?.length) return;
+          playlist.songs = (await resolveTracks(playlist.tracks)).map(s => new Song(new SoundCloudTrack(s)));
+          // eslint-disable-next-line consistent-return
+          return new Playlist(playlist);
+        }),
+      )
+    ).filter(isTruthy);
   }
 
   /**
