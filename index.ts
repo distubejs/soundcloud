@@ -42,7 +42,7 @@ export class SoundCloudPlugin extends ExtractorPlugin {
     if (type === "track") {
       const data = await sc.tracks.searchV2({ q: query, limit });
       if (!data?.collection?.length) {
-        throw new DisTubeError("SOUNDCLOUD_NO_RESULT", `Cannot find any "${query}" ${type} on SoundCloud!`);
+        throw new DisTubeError("SOUNDCLOUD_PLUGIN_NO_RESULT", `Cannot find any "${query}" ${type} on SoundCloud!`);
       }
       return data.collection.map(t => new Song(new SoundCloudTrack(t)));
     }
@@ -77,21 +77,20 @@ export class SoundCloudPlugin extends ExtractorPlugin {
     return /^https?:\/\/(?:(?:www|m)\.)?soundcloud\.com\/(.*)$/.test(url);
   }
 
-  async resolve(url: string, member: GuildMember): Promise<Song | Playlist> {
+  async resolve(url: string, options: { member?: GuildMember; metadata?: any }) {
+    const opt = { ...options, source: "soundcloud" };
     url = url.replace(/:\/\/(m|www)\./g, "://");
     const data = await sc.resolve.getV2(url, true).catch(() => undefined);
     if (!data || !["track", "playlist"].includes(data.kind)) {
-      throw new DisTubeError("SOUNDCLOUD_NOT_SUPPORTED", "Only public links are supported.");
+      throw new DisTubeError("SOUNDCLOUD_PLUGIN_NOT_SUPPORTED", "Only public links are supported.");
     }
     if (data.kind === "playlist") {
       const playlist = new SoundCloudPlaylist(data);
-      if (!playlist.tracks?.length) throw new DisTubeError("SOUNDCLOUD_PLAYLIST_EMPTY", "This playlist is empty.");
-      playlist.songs = (await resolveTracks(playlist.tracks)).map(
-        s => new Song(new SoundCloudTrack(s), member, "soundcloud"),
-      );
-      return new Playlist(playlist, member);
+      if (!playlist.tracks?.length) throw new DisTubeError("SOUNDCLOUD_PLUGIN_EMPTY_PLAYLIST", "Playlist is empty.");
+      playlist.songs = (await resolveTracks(playlist.tracks)).map(s => new Song(new SoundCloudTrack(s), opt));
+      return new Playlist(playlist, opt);
     } else {
-      return new Song(new SoundCloudTrack(data), member);
+      return new Song(new SoundCloudTrack(data), opt);
     }
   }
 
@@ -104,7 +103,7 @@ export class SoundCloudPlugin extends ExtractorPlugin {
     const stream = await sc.util.streamLink(url);
     if (!stream) {
       throw new DisTubeError(
-        "SOUNDCLOUD_RATE_LIMITED",
+        "SOUNDCLOUD_PLUGIN_RATE_LIMITED",
         "Reached SoundCloud rate limits\nSee more: https://developers.soundcloud.com/docs/api/rate-limits#play-requests",
       );
     }
