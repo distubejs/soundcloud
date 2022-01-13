@@ -1,7 +1,18 @@
+<div align="center">
+  <p>
+    <a href="https://nodei.co/npm/@distube/soundcloud"><img src="https://nodei.co/npm/@distube/soundcloud.png?downloads=true&downloadRank=true&stars=true"></a>
+  </p>
+  <p>
+    <img alt="npm peer dependency version" src="https://img.shields.io/npm/dependency-version/@distube/soundcloud/peer/distube?style=flat-square">
+    <img alt="npm" src="https://img.shields.io/npm/dt/@distube/soundcloud?logo=npm&style=flat-square">
+    <img alt="GitHub Repo stars" src="https://img.shields.io/github/stars/distubejs/soundcloud?logo=github&logoColor=white&style=flat-square">
+    <a href="https://discord.gg/feaDd9h"><img alt="Discord" src="https://img.shields.io/discord/732254550689316914?logo=discord&logoColor=white&style=flat-square"></a>
+  </p>
+</div>
+
 # @distube/soundcloud
 
 SoundCloud extractor plugin for [DisTube.js.org](https://distube.js.org).
-Required DisTube version >= 3.0.0.
 
 # Feature
 
@@ -13,7 +24,7 @@ Required DisTube version >= 3.0.0.
 # Installation
 
 ```sh
-npm install @distube/soundcloud
+npm install @distube/soundcloud@latest
 ```
 
 # Documentation
