@@ -17,8 +17,8 @@ SoundCloud extractor plugin for [DisTube.js.org](https://distube.js.org).
 # Feature
 
 - Using SoundCloud API
-- Support tracks, playlist
-- Search tracks/playlists
+- Support SoundCloud tracks, albums and playlists
+- Search on SoundCloud
 - Faster than `youtube-dl` extractor
 
 # Installation
@@ -53,23 +53,12 @@ Searches for the given query on SoundCloud.
 
 ```js
 const Discord = require("discord.js");
-const DisTube = require("distube");
-const { SoundCloudPlugin } = require("@distube/soundcloud");
 const client = new Discord.Client();
+
+const { DisTube } = require("distube");
+const { SoundCloudPlugin } = require("@distube/soundcloud");
 const distube = new DisTube(client, {
-  searchSongs: 10,
-  emitNewSongOnly: true,
   plugins: [new SoundCloudPlugin()],
-});
-
-// Now distube.play can play soundcloud url.
-
-client.on("message", message => {
-  if (message.author.bot) return;
-  if (!message.content.startsWith(config.prefix)) return;
-  const args = message.content.slice(config.prefix.length).trim().split(/ +/g);
-  const command = args.shift();
-  if (command === "play") distube.play(message, args.join(" "));
 });
 ```
 
