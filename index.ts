@@ -36,7 +36,7 @@ export class SoundCloudPlugin extends ExtractorPlugin {
   static async search(query: string, type: ElementOf<typeof SEARCH_SUPPORT> = "track", limit = 10) {
     if (typeof query !== "string") throw new DisTubeError("INVALID_TYPE", "string", query, "query");
     if (!SEARCH_SUPPORT.includes(type)) throw new DisTubeError("INVALID_TYPE", SEARCH_SUPPORT, type, "type");
-    if (typeof limit !== "number" || limit < 1 || Math.floor(limit) !== limit) {
+    if (typeof limit !== "number" || limit < 1 || !Number.isInteger(limit)) {
       throw new DisTubeError("INVALID_TYPE", "natural number", limit, "limit");
     }
     if (type === "track") {
@@ -73,7 +73,7 @@ export class SoundCloudPlugin extends ExtractorPlugin {
   }
 
   // eslint-disable-next-line @typescript-eslint/require-await
-  async validate(url: string) {
+  override async validate(url: string) {
     return /^https?:\/\/(?:(?:www|m)\.)?soundcloud\.com\/(.*)$/.test(url);
   }
 
@@ -94,12 +94,12 @@ export class SoundCloudPlugin extends ExtractorPlugin {
     }
   }
 
-  async getRelatedSongs(url: string | number) {
+  override async getRelatedSongs(url: string | number) {
     const related = await sc.tracks.relatedV2(url, 10);
     return related.filter(t => t.title).map(t => new Song(new SoundCloudTrack(t)));
   }
 
-  async getStreamURL(url: string) {
+  override async getStreamURL(url: string) {
     const stream = await sc.util.streamLink(url);
     if (!stream) {
       throw new DisTubeError(
