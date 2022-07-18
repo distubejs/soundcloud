@@ -10,10 +10,9 @@
     "prettier": "prettier --write \"**/*.{js,ts,json,yml,yaml,md}\"",
     "build": "tsup",
     "build:check": "tsc --noEmit",
-    "npm:publish": "npm publish --access public",
     "postinstall": "husky install",
-    "prepublishOnly": "pinst -d",
-    "postpublish": "pinst -e"
+    "prepack": "yarn build && pinst -d",
+    "postpack": "pinst -e"
   },
   "repository": {
     "type": "git",
