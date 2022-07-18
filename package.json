@@ -58,7 +58,7 @@
     "soundcloud.ts": "^0.4.6"
   },
   "peerDependencies": {
-    "distube": "^3.1.0"
+    "distube": "3||4"
   },
   "nano-staged": {
     "*.ts": [
