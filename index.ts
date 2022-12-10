@@ -117,6 +117,7 @@ class SoundCloudTrack implements OtherSongInfo {
   thumbnail: string;
   duration: number;
   views: number;
+  likes: number;
   reposts: number;
   uploader: string;
   uploader_url: string;
@@ -128,6 +129,7 @@ class SoundCloudTrack implements OtherSongInfo {
     this.thumbnail = info.artwork_url;
     this.duration = info.duration / 1000;
     this.views = info.playback_count;
+    this.likes = info.likes_count;
     this.reposts = info.reposts_count;
     this.uploader = info.user?.username;
     this.uploader_url = info.user?.permalink_url;

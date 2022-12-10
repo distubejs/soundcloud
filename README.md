@@ -64,7 +64,7 @@ scPlugin.search("A SoundCloud Playlist", "playlist", 3); // class method
 #### Example
 
 ```js
-new SpotifyPlugin({
+new SoundCloudPlugin({
   clientId: "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
   oauthToken: "0-000000-000000000-xxxxxxxxxxxxxx",
 });
