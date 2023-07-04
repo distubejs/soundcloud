@@ -60,6 +60,7 @@ scPlugin.search("A SoundCloud Playlist", "playlist", 3); // class method
 
 - `SoundCloudPluginOptions.clientId` [string] _(optional)_: Your account's client id.
 - `SoundCloudPluginOptions.oauthToken` [string] _(optional)_: Your account's oauth token. Used to fetch more data with SoundCloud Go+ account.
+- How to get `clientId` and `oauthToken`? [See here](https://github.com/Tenpi/soundcloud.ts#getting-started)
 
 #### Example
 

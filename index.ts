@@ -31,7 +31,10 @@ export class SoundCloudPlugin extends ExtractorPlugin {
     if (options.oauthToken && typeof options.oauthToken !== "string") {
       throw new DisTubeError("INVALID_TYPE", "string", options.oauthToken, "oauthToken");
     }
-    this.#sc = new SoundCloud(options?.clientId, options?.oauthToken);
+    this.#sc = new SoundCloud({
+      clientId: options.clientId,
+      oauthToken: options.oauthToken,
+    });
   }
   static search(query: string, type?: SearchType.Track, limit?: number): Promise<Song<undefined>[]>;
   static search(query: string, type: SearchType.Playlist, limit?: number): Promise<Playlist<undefined>[]>;
@@ -46,6 +49,13 @@ export class SoundCloudPlugin extends ExtractorPlugin {
     if (typeof limit !== "number" || limit < 1 || !Number.isInteger(limit)) {
       throw new DisTubeError("INVALID_TYPE", "natural number", limit, "limit");
     }
+
+    await SC.api.getClientId().catch(() => {
+      throw new DisTubeError(
+        "SOUNDCLOUD_PLUGIN_NO_CLIENT_ID",
+        "Cannot find SoundCloud client id automatically. Please provide a client id in the constructor.\nGuide: https://github.com/distubejs/soundcloud#documentation",
+      );
+    });
 
     switch (type) {
       case SearchType.Track: {
@@ -80,11 +90,19 @@ export class SoundCloudPlugin extends ExtractorPlugin {
   }
 
   async resolve(url: string, options: { member?: GuildMember; metadata?: any }) {
+    await SC.api.getClientId().catch(() => {
+      throw new DisTubeError(
+        "SOUNDCLOUD_PLUGIN_NO_CLIENT_ID",
+        "Cannot find SoundCloud client id automatically. Please provide a client id in the constructor.\nGuide: https://github.com/distubejs/soundcloud#documentation",
+      );
+    });
     const opt = { ...options, source: "soundcloud" };
     url = url.replace(/:\/\/(m|www)\./g, "://");
-    const data = await this.#sc.resolve.getV2(url, true).catch(() => undefined);
+    const data = await this.#sc.resolve.getV2(url, true).catch(e => {
+      throw new DisTubeError("SOUNDCLOUD_PLUGIN_RESOLVE_ERROR", e.message);
+    });
     if (!data || !["track", "playlist"].includes(data.kind)) {
-      throw new DisTubeError("SOUNDCLOUD_PLUGIN_NOT_SUPPORTED", "Only public links are supported.");
+      throw new DisTubeError("SOUNDCLOUD_PLUGIN_NOT_SUPPORTED", "Only public tracks and playlists are supported.");
     }
 
     return data.kind === "playlist"
