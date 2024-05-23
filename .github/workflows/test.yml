@@ -1,13 +1,9 @@
-name: Publish @distube/soundcloud
-on:
-  release:
-    types: [published]
+name: Test
+on: [push, pull_request]
 jobs:
-  build:
-    name: Build & Publish
+  test:
+    name: Test on Node.js v20 (ubuntu-latest)
     runs-on: ubuntu-latest
-    permissions:
-      id-token: write
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -26,9 +22,8 @@ jobs:
       - name: Install dependencies
         run: bun install --frozen-lockfile
 
-      - name: Publish
-        run: |
-          npm publish --provenance --access public
-          npm deprecate @distube/soundcloud@"< ${{ github.event.release.tag_name }}" "This version is deprecated, please upgrade to the latest version."
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}
+      - name: Linting
+        run: bun --bun run lint
+
+      - name: Run TypeScript compiler
+        run: bun --bun run build:check

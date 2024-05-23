@@ -17,9 +17,9 @@
     "prettier": "prettier --write \"**/*.{js,ts,json,yml,yaml,md}\"",
     "build": "tsup",
     "build:check": "tsc --noEmit",
-    "update": "ncu -u && yarn up '**' -R",
+    "update": "ncu -u && bun update",
     "postinstall": "husky",
-    "prepack": "yarn build && pinst -d",
+    "prepack": "bun run build && pinst -d",
     "postpack": "pinst -e",
     "prepare": "husky"
   },
